@@ -4,30 +4,34 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
-
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Adm
- */
 public class conectaDAO {
     
     public Connection connectDB(){
         Connection conn = null;
-        
+
         try {
-        
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/uc11?user=root&password=");
-            
-        } catch (SQLException erro){
-            JOptionPane.showMessageDialog(null, "Erro ConectaDAO" + erro.getMessage());
+            // Certifique-se de que o driver JDBC está carregado
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Estabelece a conexão com o banco de dados
+            String url = "jdbc:mysql://localhost/uc11?useSSL=false";
+            conn = DriverManager.getConnection(url, "root", "mariana10");
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "Driver JDBC não encontrado: " + e.getMessage());
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro de Conexão: " + e.getMessage());
         }
+        
         return conn;
+    }
+    
+    public void closeConnection(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, "Erro ao fechar a conexão: " + e.getMessage());
+            }
+        }
     }
     
 }
