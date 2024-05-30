@@ -37,10 +37,12 @@ public class ProdutosDAO {
         query.setString(3,produto.getStatus());
         
         query.execute();
+        JOptionPane.showMessageDialog(null,"Cadastro realizado com sucesso");
          
        }
        catch (SQLException se) {
             System.out.println("Erro ao cadastrar registro no banco de dados");
+            JOptionPane.showMessageDialog(null,"Cadastro não realizado");
             
         }
     }
