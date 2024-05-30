@@ -22,7 +22,7 @@ public class ProdutosDAO {
     PreparedStatement prep;
     ResultSet resultset;
     ArrayList<ProdutosDTO> listagem = new ArrayList<>();
-    
+    conectaDAO cd =new conectaDAO();
     public void cadastrarProduto (ProdutosDTO produto) throws SQLException{
         
        try { 
@@ -48,8 +48,35 @@ public class ProdutosDAO {
     }
     
     public ArrayList<ProdutosDTO> listarProdutos(){
+        ArrayList<ProdutosDTO> listaProdutos = new ArrayList<>();
+        conn = new conectaDAO().connectDB();
         
-        return listagem;
+        if (conn == null) {
+            JOptionPane.showMessageDialog(null, "Não foi possível estabelecer a conexão com o banco de dados.");
+            return listaProdutos;
+        }
+
+        String sql = "SELECT id, nome, valor, status FROM produtos";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("Id"));
+                produto.setNome(rs.getString("Nome"));
+                produto.setValor(rs.getInt("Valor"));
+                produto.setStatus(rs.getString("Status"));
+                listaProdutos.add(produto);
+            }
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar produtos: " + e.getMessage());
+        } finally {
+            cd.closeConnection(conn);
+        }
+        
+        return listaProdutos;
     }
     
     
