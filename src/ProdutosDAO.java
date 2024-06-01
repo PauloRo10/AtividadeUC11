@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ProdutosDAO {
@@ -104,6 +105,45 @@ String sql = "UPDATE produtos SET status=? WHERE id=?;";
             JOptionPane.showMessageDialog(null,"Cadastro não realizado");
             
         }
+    }
+    
+     public List<ProdutosDTO> listarProdutosVendidos() {
+        List<ProdutosDTO> produtosVendidos = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement consulta = null;
+        ResultSet resultado = null;
+
+        try {
+            conn = new conectaDAO().connectDB();
+            
+            String sql = "SELECT id, nome, valor, status FROM produtos WHERE status = ?";
+            consulta = conn.prepareStatement(sql);
+            consulta.setString(1, "Vendido");
+            
+            resultado = consulta.executeQuery();
+            
+            while (resultado.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultado.getInt("id"));
+                produto.setNome(resultado.getString("nome"));
+                produto.setValor(resultado.getInt("valor"));
+                produto.setStatus(resultado.getString("status"));
+                
+                produtosVendidos.add(produto);
+            }
+        } catch (SQLException se) {
+            System.out.println("Erro ao listar produtos vendidos: " + se.getMessage());
+        } finally {
+            try {
+                if (resultado != null) resultado.close();
+                if (consulta != null) consulta.close();
+                if (conn != null) conn.close();
+            } catch (SQLException se) {
+                System.out.println("Erro ao fechar recursos: " + se.getMessage());
+            }
+        }
+
+        return produtosVendidos;
     }
         
     }
