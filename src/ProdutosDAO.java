@@ -79,8 +79,37 @@ public class ProdutosDAO {
         return listaProdutos;
     }
     
+    public  void venderProduto(ProdutosDTO p){
+        try { 
+       
+        
+       conn = new conectaDAO().connectDB();
+        
+String sql = "UPDATE produtos SET status=? WHERE id=?;";
+            PreparedStatement consulta = conn.prepareStatement(sql);
+            
+            //consulta = conn.prepareStatement(sql);
+            
+             consulta.setString(1, p.getStatus());
+             consulta.setInt(2, p.getId());
+
+             
+             consulta.executeUpdate();
+             
+             cd.closeConnection(conn);
+            
+       }
+       catch (SQLException se) {
+            System.out.println("Erro ao cadastrar registro no banco de dados");
+            JOptionPane.showMessageDialog(null,"Cadastro não realizado");
+            
+        }
+    }
+        
+    }
+    
     
     
         
-}
+
 
